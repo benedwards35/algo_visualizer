@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from algorithms.sorting.bubble_sort import bubble_sort
 import random
 
 class SortingTab:
@@ -26,6 +27,7 @@ class SortingTab:
         self.canvas.pack(side="left", padx=10, pady=10)
 
         self.data = []
+        self.sort_gen = None
 
     def generate_array(self):
         size = self.size_var.get()
@@ -49,18 +51,16 @@ class SortingTab:
             self.canvas.create_rectangle(x0, y0, x1, y1, fill=color)
 
     def run_bubble_sort(self):
-        self.bubble_sort_step(0, 0)
+        if not self.data:
+            return
+        self.sort_gen = bubble_sort(self.data)
+        self.animate_sort_step()
 
-    def bubble_sort_step(self, i, j):
-        n = len(self.data)
-        if i >= n - 1:
-            return 
-
-        if j < n - i - 1:
-            self.draw_array(highlight=[j, j+1])
-
-            if self.data[j] > self.data[j+1]:
-                self.data[j], self.data[j+1] = self.data[j+1], self.data[j]
-            self.canvas.after(self.speed_var.get(), lambda: self.bubble_sort_step(i, j+1))
-        else:
-            self.canvas.after(self.speed_var.get(), lambda: self.bubble_sort_step(i+1, 0))
+    def animate_sort_step(self):
+        try:
+            arr, highlight = next(self.sort_gen)
+            self.data = arr
+            self.draw_array(highlight=highlight)
+            self.canvas.after(self.speed_var.get(), self.animate_sort_step)
+        except StopIteration:
+            return
