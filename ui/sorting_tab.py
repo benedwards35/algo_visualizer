@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from algorithms.sorting.bubble_sort import bubble_sort
+from algorithms.sorting.insertion_sort import insertion_sort
 import random
 
 class SortingTab:
@@ -17,11 +18,12 @@ class SortingTab:
 
         tk.Label(control_frame, text="Algorithm Speed (ms)").pack(pady=5)
         self.speed_var = tk.IntVar(value=100)
-        self.speed_scale = tk.Scale(control_frame, from_=10, to=1000, orient="horizontal", variable=self.speed_var)
+        self.speed_scale = tk.Scale(control_frame, from_=1, to=1000, orient="horizontal", variable=self.speed_var)
         self.speed_scale.pack(pady=5)
 
         tk.Button(control_frame, text="Generate Array", command=self.generate_array).pack(pady=5)
         tk.Button(control_frame, text="Bubble Sort", command=self.run_bubble_sort).pack(pady=5)
+        tk.Button(control_frame, text="Insertion Sort", command=self.run_insertion_sort).pack(pady=5)
 
         self.canvas = tk.Canvas(self.frame, width=700, height=400, bg="white")
         self.canvas.pack(side="left", padx=10, pady=10)
@@ -54,6 +56,12 @@ class SortingTab:
         if not self.data:
             return
         self.sort_gen = bubble_sort(self.data)
+        self.animate_sort_step()
+
+    def run_insertion_sort(self):
+        if not self.data:
+            return
+        self.sort_gen = insertion_sort(self.data)
         self.animate_sort_step()
 
     def animate_sort_step(self):
