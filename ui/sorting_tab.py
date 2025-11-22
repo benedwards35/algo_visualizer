@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from algorithms.sorting.bubble_sort import bubble_sort
 from algorithms.sorting.insertion_sort import insertion_sort
+from algorithms.sorting.merge_sort import merge_sort
 import random
 
 class SortingTab:
@@ -24,6 +25,7 @@ class SortingTab:
         tk.Button(control_frame, text="Generate Array", command=self.generate_array).pack(pady=5)
         tk.Button(control_frame, text="Bubble Sort", command=self.run_bubble_sort).pack(pady=5)
         tk.Button(control_frame, text="Insertion Sort", command=self.run_insertion_sort).pack(pady=5)
+        tk.Button(control_frame, text="Merge Sort", command=self.run_merge_sort).pack(pady=5)
 
         self.canvas = tk.Canvas(self.frame, width=700, height=400, bg="white")
         self.canvas.pack(side="left", padx=10, pady=10)
@@ -62,6 +64,12 @@ class SortingTab:
         if not self.data:
             return
         self.sort_gen = insertion_sort(self.data)
+        self.animate_sort_step()
+
+    def run_merge_sort(self):
+        if not self.data:
+            return
+        self.sort_gen = merge_sort(self.data)
         self.animate_sort_step()
 
     def animate_sort_step(self):

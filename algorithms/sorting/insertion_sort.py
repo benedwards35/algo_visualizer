@@ -15,4 +15,3 @@ def insertion_sort(arr):
 
     yield arr, None
 
-
