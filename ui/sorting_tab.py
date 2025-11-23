@@ -28,7 +28,36 @@ class SortingTab:
         tk.Button(control_frame, text="Merge Sort", command=self.run_merge_sort).pack(pady=5)
 
         self.canvas = tk.Canvas(self.frame, width=700, height=400, bg="white")
+        self.info_frame = tk.Frame(self.frame)
+        self.description_label = tk.Label(
+        self.info_frame,
+            text="Click on a Sorting Algorithm to view its description.",
+            wraplength=250,
+            justify="left"
+        )
+        self.algorithm_descriptions = {
+            "bubble": "Bubble Sort repeatedly swaps adjacent elements if they are in the wrong order until the list is sorted.",
+            "insertion": "Insertion Sort builds a sorted array one element at a time by inserting elements in their correct position.",
+            "merge": "Merge Sort recursively splits the array into halves, sorts each half, and merges them back together."
+        }
+
+        self.code_text = tk.Text(
+            self.info_frame,
+            height=15,
+            width=50,           
+            wrap="none",
+            font=("Courier", 10),
+            bg="#1e1e1e",
+            fg="#d4d4d4",
+            insertbackground="#ffffff",
+            borderwidth=1,
+            relief="solid"
+        )
+
+        self.description_label.pack(pady=5)
+        self.code_text.pack(pady=5, fill="both", expand=True)
         self.canvas.pack(side="left", padx=10, pady=10)
+        self.info_frame.pack(side="right", fill="both", expand=True, padx=10, pady=10)
 
         self.data = []
         self.sort_gen = None
@@ -57,18 +86,21 @@ class SortingTab:
     def run_bubble_sort(self):
         if not self.data:
             return
+        self.description_label.config(text=self.algorithm_descriptions["bubble"])
         self.sort_gen = bubble_sort(self.data)
-        self.animate_sort_step()
+        self.animate_sort_step()    
 
     def run_insertion_sort(self):
         if not self.data:
             return
+        self.description_label.config(text=self.algorithm_descriptions["insertion"])
         self.sort_gen = insertion_sort(self.data)
         self.animate_sort_step()
 
     def run_merge_sort(self):
         if not self.data:
             return
+        self.description_label.config(text=self.algorithm_descriptions["merge"])
         self.sort_gen = merge_sort(self.data)
         self.animate_sort_step()
 
