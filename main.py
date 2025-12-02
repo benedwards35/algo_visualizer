@@ -9,3 +9,17 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+'''
+Backlog:
+- Graph Algorithms: "Backend"
+- Graph Algorithms: Frontend
+- graph_tab.py 
+
+- Tree Algorithms: "Backend"
+- Tree Algorithms: Frontend
+- tree_tab.py
+
+- UI/UX Design
+- Dark Mode, Smooth Animations
+'''
