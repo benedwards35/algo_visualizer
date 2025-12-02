@@ -12,23 +12,28 @@ class SortingTab:
         control_frame = tk.Frame(self.frame)
         control_frame.pack(side="left", fill="y", padx=10, pady=10)
 
-        tk.Label(control_frame, text="Array Size (max 30)").pack(pady=5)
-        self.size_var = tk.IntVar(value=20)
-        self.size_spinbox = tk.Spinbox(control_frame, from_=2, to=40, textvariable=self.size_var)
-        self.size_spinbox.pack(pady=5)
+        tk.Button(control_frame, text="Generate Random Array", command=self.generate_array).pack(pady=5)
 
-        tk.Label(control_frame, text="Algorithm Speed (ms)").pack(pady=5)
-        self.speed_var = tk.IntVar(value=100)
-        self.speed_scale = tk.Scale(control_frame, from_=1, to=1000, orient="horizontal", variable=self.speed_var)
-        self.speed_scale.pack(pady=5)
-
-        tk.Button(control_frame, text="Generate Array", command=self.generate_array).pack(pady=5)
-        tk.Button(control_frame, text="Bubble Sort", command=self.run_bubble_sort).pack(pady=5)
-        tk.Button(control_frame, text="Insertion Sort", command=self.run_insertion_sort).pack(pady=5)
-        tk.Button(control_frame, text="Merge Sort", command=self.run_merge_sort).pack(pady=5)
+        sorting_buttons_frame = tk.Frame(control_frame)
+        sorting_buttons_frame.pack(pady=10)
+        tk.Label(sorting_buttons_frame, text="Sorting Methods:").pack(pady=5)
+        tk.Button(sorting_buttons_frame, text="Bubble Sort", command=self.run_bubble_sort).pack(pady=5)
+        tk.Button(sorting_buttons_frame, text="Insertion Sort", command=self.run_insertion_sort).pack(pady=5)
+        tk.Button(sorting_buttons_frame, text="Merge Sort", command=self.run_merge_sort).pack(pady=5)
 
         control_buttons_frame = tk.Frame(control_frame)
         control_buttons_frame.pack(pady=15)
+        tk.Label(control_buttons_frame, text="Controls:").pack(pady=5)
+
+        tk.Label(control_buttons_frame, text="Array Size (max 40)").pack(pady=2)
+        self.size_var = tk.IntVar(value=20)
+        self.size_spinbox = tk.Spinbox(control_buttons_frame, from_=2, to=40, textvariable=self.size_var)
+        self.size_spinbox.pack(pady=2)
+
+        tk.Label(control_buttons_frame, text="Algorithm Speed (ms)").pack(pady=2)
+        self.speed_var = tk.IntVar(value=100)
+        self.speed_scale = tk.Scale(control_buttons_frame, from_=1, to=1000, orient="horizontal", variable=self.speed_var)
+        self.speed_scale.pack(pady=2)
 
         self.pause_resume_btn = tk.Button(
             control_buttons_frame, 
@@ -37,7 +42,7 @@ class SortingTab:
             state="disabled",
             width=10
         )
-        self.pause_resume_btn.pack(side="left", padx=5)
+        self.pause_resume_btn.pack(side="left", padx=5, pady=10)
 
         self.reset_btn = tk.Button(
             control_buttons_frame, 
@@ -233,7 +238,7 @@ class SortingTab:
             self.canvas.create_rectangle(x0, y0, x1, y1, fill=color, outline="black")
 
             label_x = (x0 + x1) / 2
-            label_y = usable_height + 15
+            label_y = usable_height + 15    
             self.canvas.create_text(
                 label_x,
                 label_y,
