@@ -13,8 +13,8 @@ class SortingTab:
         control_frame.pack(side="left", fill="y", padx=10, pady=10)
 
         tk.Label(control_frame, text="Array Size (max 30)").pack(pady=5)
-        self.size_var = tk.IntVar(value=10)
-        self.size_spinbox = tk.Spinbox(control_frame, from_=2, to=30, textvariable=self.size_var)
+        self.size_var = tk.IntVar(value=20)
+        self.size_spinbox = tk.Spinbox(control_frame, from_=2, to=40, textvariable=self.size_var)
         self.size_spinbox.pack(pady=5)
 
         tk.Label(control_frame, text="Algorithm Speed (ms)").pack(pady=5)
@@ -26,6 +26,28 @@ class SortingTab:
         tk.Button(control_frame, text="Bubble Sort", command=self.run_bubble_sort).pack(pady=5)
         tk.Button(control_frame, text="Insertion Sort", command=self.run_insertion_sort).pack(pady=5)
         tk.Button(control_frame, text="Merge Sort", command=self.run_merge_sort).pack(pady=5)
+
+        control_buttons_frame = tk.Frame(control_frame)
+        control_buttons_frame.pack(pady=15)
+
+        self.pause_resume_btn = tk.Button(
+            control_buttons_frame, 
+            text="Pause", 
+            command=self.toggle_pause,
+            state="disabled",
+            width=10
+        )
+        self.pause_resume_btn.pack(side="left", padx=5)
+
+        self.reset_btn = tk.Button(
+            control_buttons_frame, 
+            text="Reset", 
+            command=self.reset_sort,
+            state="disabled",
+            width=10
+        )
+
+        self.reset_btn.pack(side="left", padx=5)
 
         self.canvas = tk.Canvas(self.frame, width=700, height=400, bg="white")
         self.info_frame = tk.Frame(self.frame)
@@ -174,9 +196,15 @@ class SortingTab:
         self.data = []
         self.sort_gen = None
 
+        self.original_data = []
+        self.is_paused = False
+        self.is_sorting = False
+        self.after_id = None
+
     def generate_array(self):
         size = self.size_var.get()
         self.data = [random.randint(10, 390) for _ in range(size)]
+        self.original_data = self.data[:]
         self.draw_array()
         
         self.instruction_text.config(state="normal")
@@ -220,8 +248,13 @@ class SortingTab:
         self.current_algorithm = "bubble"
         self.description.config(text=self.algorithm_descriptions["bubble"])
 
+        self.data = self.original_data[:]
         self.sort_gen = bubble_sort(self.data)
-        self.animate_sort_step()    
+        self.is_sorting = True
+        self.is_paused = False
+        self.pause_resume_btn.config(state="normal", text="Pause")
+        self.reset_btn.config(state="normal")
+        self.animate_sort_step()   
 
     def run_insertion_sort(self):
         if not self.data:
@@ -229,7 +262,12 @@ class SortingTab:
         self.current_algorithm = "insertion"
         self.description.config(text=self.algorithm_descriptions["insertion"])
 
+        self.data = self.original_data[:]
         self.sort_gen = insertion_sort(self.data)
+        self.is_sorting = True
+        self.is_paused = False
+        self.pause_resume_btn.config(state="normal", text="Pause")
+        self.reset_btn.config(state="normal")
         self.animate_sort_step()
 
     def run_merge_sort(self):
@@ -238,10 +276,17 @@ class SortingTab:
         self.current_algorithm = "merge"
         self.description.config(text=self.algorithm_descriptions["merge"])
 
+        self.data = self.original_data[:]
         self.sort_gen = merge_sort(self.data)
+        self.is_sorting = True
+        self.is_paused = False
+        self.pause_resume_btn.config(state="normal", text="Pause")
+        self.reset_btn.config(state="normal")
         self.animate_sort_step()
 
     def animate_sort_step(self):
+        if self.is_paused:
+            return
         try:
             result = next(self.sort_gen)
             
@@ -275,7 +320,35 @@ class SortingTab:
                     
                     self.instruction_text.config(state="disabled")
 
-            self.canvas.after(self.speed_var.get(), self.animate_sort_step)
+            self.after_id = self.canvas.after(self.speed_var.get(), self.animate_sort_step)
             
         except StopIteration:
+            self.is_sorting = False
+            self.pause_resume_btn.config(state="disabled", text="Pause")
+            self.reset_btn.config(state="disabled")
             return
+        
+    def toggle_pause(self):
+        if self.is_sorting:
+            self.is_paused = not self.is_paused
+            if self.is_paused:
+                self.pause_resume_btn.config(text="Resume")
+                if self.after_id:
+                    self.canvas.after_cancel(self.after_id)
+                    self.after_id = None
+            else:
+                self.pause_resume_btn.config(text="Pause")
+                self.animate_sort_step()
+
+    def reset_sort(self):
+        if self.after_id:
+            self.canvas.after_cancel(self.after_id)
+            self.after_id = None
+        self.is_sorting = False
+        self.is_paused = False
+        self.sort_gen = None
+        self.pause_resume_btn.config(state="disabled", text="Pause")
+        self.reset_btn.config(state="disabled")
+        
+        self.data = self.original_data[:]
+        self.draw_array()
